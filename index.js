@@ -11,36 +11,69 @@ function getComputerChoice() {
   console.log(randomNumber);
 
   if (randomNumber === 0) {
-    return "Rock";
+    return "rock";
   } else if (randomNumber === 1) {
-    return "Paper";
+    return "paper";
   } else {
-    return "Scissors";
+    return "scissors";
   }
 }
 
-function playGame() {
-  const user = prompt("Choose between Rock, Paper, and Scissors.");
-  console.log(user);
+function getUserChoice() {
+  return prompt("Choose between Rock, Paper, and Scissors.")
+}
 
-  const computer = getComputerChoice();
-  console.log(computer);
+function playRound() {
+  const userChoice = getUserChoice().toLocaleLowerCase();
+  console.log(userChoice);
 
-  if (user === computer) {
+  const computerChoice = getComputerChoice().toLocaleLowerCase();
+  console.log(computerChoice);
+
+  if (userChoice === computerChoice) {
+    drawCount++;
     return "It's a Draw!";
   }
 
   if (
-    (user === "Rock" && computer === "Paper") ||
-    (user === "Paper" && computer === "Scissors") ||
-    (user === "Scissors" && computer === "Rock")
+    (userChoice === "rock" && computerChoice === "paper") ||
+    (userChoice === "paper" && computerChoice === "scissors") ||
+    (userChoice === "scissors" && computerChoice === "rock")
   ) {
+    computerScore++;
     return "Computer Wins!";
   } else {
+    userScore++;
     return "You Win!";
   }
 }
 
-const result = playGame();
+function playGame(rounds) {
+  for (let i = 1; i <= rounds; i++) {
+    console.log(playRound());
+    console.log(
+      `Your Wins: ${userScore}, Computer Wins: ${computerScore}, Draws${drawCount}`,
+    );
+  }
 
-console.log(result);
+  if (userScore === computerScore) {
+    return "The Game was a draw!";
+  } else if (userScore > computerScore) {
+    return "It your overall victory🎊🎊🎊";
+  } else {
+    return "Computer won the game, better luck next time.";
+  }
+}
+
+let userScore = 0;
+let computerScore = 0;
+let drawCount = 0;
+
+const gameSize = +prompt("How many rounds do you want to play?");
+
+console.log(playGame(gameSize));
+
+console.log("Final Scores");
+console.log(
+  `Your Wins: ${userScore}, Computer Wins: ${computerScore}, Draws${drawCount}`,
+);
