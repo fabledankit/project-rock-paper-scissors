@@ -1,9 +1,17 @@
-// Computer picks a random number between 0 and 2, the number corresponds to rock paper scissors, store the choice in a variable.
-// Ask the user for their choice, and store the choice in a variable.
-// Compare the choices
-// If they made the same choice then it's a Draw!
-// If the choices are Rock and Paper, then whoever choose Paper Wins.
-// If the choice are between Paper and Scissors then whoever choose the Scissors Wins.
+const setupCont = document.querySelector("#setup");
+const rounds = document.querySelector("#rounds");
+const start = document.querySelector("#start");
+
+const resultDisplay = document.querySelector("#result");
+const endGameMessage = document.createElement("h3");
+const scoreCard = document.createElement("p");
+const runningScore = document.createElement("p");
+
+const choices = document.querySelector("#choices");
+
+let userScore = 0;
+let computerScore = 0;
+let drawCount = 0;
 
 function getComputerChoice() {
   const randomNumber = Math.floor(Math.random() * 3);
@@ -19,12 +27,8 @@ function getComputerChoice() {
   }
 }
 
-function getUserChoice() {
-  return prompt("Choose between Rock, Paper, and Scissors.")
-}
-
-function playRound() {
-  const userChoice = getUserChoice().toLocaleLowerCase();
+function playRound(userChoice) {
+  userChoice = userChoice.toLocaleLowerCase();
   console.log(userChoice);
 
   const computerChoice = getComputerChoice().toLocaleLowerCase();
@@ -48,32 +52,46 @@ function playRound() {
   }
 }
 
-function playGame(rounds) {
-  for (let i = 1; i <= rounds; i++) {
-    console.log(playRound());
-    console.log(
-      `Your Wins: ${userScore}, Computer Wins: ${computerScore}, Draws${drawCount}`,
-    );
+let currentRound = 1;
+let totalRounds = 0;
+
+start.addEventListener("click", () => {
+  totalRounds = parseInt(rounds.value);
+
+  setupCont.style.display = "none";
+})
+
+choices.addEventListener("click", (event) => {
+  if (currentRound > totalRounds) {
+    runningScore.textContent = "Game Over! Refresh to play again.";
+    return;
   }
 
+  if (event.target.tagName === "BUTTON") {
+    playRound(event.target.textContent);
+
+    runningScore.textContent = `Round ${currentRound}/${totalRounds} -> Your Wins: ${userScore}, Computer Wins: ${computerScore}, Draws: ${drawCount}`;
+    resultDisplay.appendChild(runningScore);
+
+    currentRound++;
+
+    if (currentRound > totalRounds) {
+      declareFinalWinner();
+    }
+  }
+});
+
+function declareFinalWinner() {
+  scoreCard.textContent = `Your Wins: ${userScore}, Computer Wins: ${computerScore}, Draws: ${drawCount}`;
+  
   if (userScore === computerScore) {
-    return "The Game was a draw!";
+    endGameMessage.textContent = "The Game was a draw!";
   } else if (userScore > computerScore) {
-    return "It your overall victory🎊🎊🎊";
+    endGameMessage.textContent = "It your overall victory🎊🎊🎊";
   } else {
-    return "Computer won the game, better luck next time.";
+    endGameMessage.textContent =
+      "Computer won the game, better luck next time.";
   }
+
+  resultDisplay.append(endGameMessage, scoreCard);
 }
-
-let userScore = 0;
-let computerScore = 0;
-let drawCount = 0;
-
-const gameSize = +prompt("How many rounds do you want to play?");
-
-console.log(playGame(gameSize));
-
-console.log("Final Scores");
-console.log(
-  `Your Wins: ${userScore}, Computer Wins: ${computerScore}, Draws${drawCount}`,
-);
